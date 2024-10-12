@@ -1,0 +1,3 @@
+# get console url
+console=$(oc get route console -n openshift-console -o jsonpath='{.spec.host}')
+

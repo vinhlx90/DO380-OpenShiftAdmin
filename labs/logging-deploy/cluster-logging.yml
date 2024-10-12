@@ -1,0 +1,65 @@
+---
+- name: Installing Red Hat OpenShift Logging
+  hosts: localhost
+  become: false
+  gather_facts: false
+  module_defaults:
+    group/redhat.openshift.openshift:
+      ca_cert: "/etc/pki/tls/certs/ca-bundle.crt"
+    group/kubernetes.core.k8s:
+      ca_cert: "/etc/pki/tls/certs/ca-bundle.crt"
+
+  tasks:
+    - name: Ensure the operators are deployed
+      redhat.openshift.k8s:
+        state: present
+        src: "{{ item }}"
+      loop:
+        - elasticsearch-operator.yml
+        - logging-operator.yml
+
+    - name: Ensure the event router template is installed
+      redhat.openshift.k8s:
+        state: present
+        namespace: openshift-logging
+        src: event-router-template.yml
+
+    - name: Ensure the event router is deployed
+      redhat.openshift.openshift_process:
+        state: present
+        name: eventrouter-template
+        namespace: openshift-logging
+        namespace_target: openshift-logging
+        parameters:
+          IMAGE: "registry.ocp4.example.com:8443/openshift-logging/eventrouter-rhel8:v0.3.0-212"
+        wait: true
+
+    - name: Ensure the OpenShift Logging subscription is ready
+      kubernetes.core.k8s_info:
+        api_version: operators.coreos.com/v1alpha1
+        kind: Subscription
+        name: cluster-logging
+        namespace: openshift-logging
+      register: cl_subs
+      retries: 30
+      delay: 3
+      until:
+        - cl_subs['resources'] | length > 0
+        - cl_subs['resources'][0]['status'] is defined
+        - cl_subs['resources'][0]['status']['installedCSV'] is defined
+
+    - name: Ensure the ClusterServiceVersion resource is ready
+      kubernetes.core.k8s_info:
+        api_version: operators.coreos.com/v1alpha1
+        kind: ClusterServiceVersion
+        name: "{{ cl_subs['resources'][0]['status']['installedCSV'] }}"
+        namespace: openshift-logging
+      register: cl_csv
+      retries: 30
+      delay: 3
+      until:
+        - cl_csv['resources'] | length > 0
+        - cl_csv['resources'][0]['status'] is defined
+        - cl_csv['resources'][0]['status']['phase'] is defined
+        - cl_csv['resources'][0]['status']['phase'] == "Succeeded"
+...

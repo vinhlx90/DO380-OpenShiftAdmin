@@ -1,0 +1,61 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+# jobs.batch "audit-sh" was not valid:
+# * spec.template: Invalid value: core.PodTemplateSpec{ObjectMeta:v1.ObjectMeta{Name:"", GenerateName:"", Namespace:"", SelfLink:"", UID:"", ResourceVersion:"", Generation:0, CreationTimestamp:time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC), DeletionTimestamp:<nil>, DeletionGracePeriodSeconds:(*int64)(nil), Labels:map[string]string{"controller-uid":"69548587-1189-407c-8469-bad65e3fb6da", "job-name":"audit-sh"}, Annotations:map[string]string(nil), OwnerReferences:[]v1.OwnerReference(nil), Finalizers:[]string(nil), ManagedFields:[]v1.ManagedFieldsEntry(nil)}, Spec:core.PodSpec{Volumes:[]core.Volume(nil), InitContainers:[]core.Container(nil), Containers:[]core.Container{core.Container{Name:"audit-sh", Image:"quay.io/openshift/origin-cli:4.12", Command:[]string{"[/bin/bash,", "c]", "[oc get pods -all-namespaces -o jsonpath='{.item[*].spec.containers[*].image}' | sed 's/ /\\n/g'|sort|uniq ]"}, Args:[]string(nil), WorkingDir:"", Ports:[]core.ContainerPort(nil), EnvFrom:[]core.EnvFromSource(nil), Env:[]core.EnvVar(nil), Resources:core.ResourceRequirements{Limits:core.ResourceList(nil), Requests:core.ResourceList(nil)}, VolumeMounts:[]core.VolumeMount(nil), VolumeDevices:[]core.VolumeDevice(nil), LivenessProbe:(*core.Probe)(nil), ReadinessProbe:(*core.Probe)(nil), StartupProbe:(*core.Probe)(nil), Lifecycle:(*core.Lifecycle)(nil), TerminationMessagePath:"/dev/termination-log", TerminationMessagePolicy:"File", ImagePullPolicy:"IfNotPresent", SecurityContext:(*core.SecurityContext)(nil), Stdin:false, StdinOnce:false, TTY:false}}, EphemeralContainers:[]core.EphemeralContainer(nil), RestartPolicy:"Never", TerminationGracePeriodSeconds:(*int64)(0xc032164290), ActiveDeadlineSeconds:(*int64)(nil), DNSPolicy:"ClusterFirst", NodeSelector:map[string]string(nil), ServiceAccountName:"auditor", AutomountServiceAccountToken:(*bool)(nil), NodeName:"", SecurityContext:(*core.PodSecurityContext)(0xc00e6c7ef0), ImagePullSecrets:[]core.LocalObjectReference(nil), Hostname:"", Subdomain:"", SetHostnameAsFQDN:(*bool)(nil), Affinity:(*core.Affinity)(nil), SchedulerName:"default-scheduler", Tolerations:[]core.Toleration(nil), HostAliases:[]core.HostAlias(nil), PriorityClassName:"", Priority:(*int32)(nil), PreemptionPolicy:(*core.PreemptionPolicy)(nil), DNSConfig:(*core.PodDNSConfig)(nil), ReadinessGates:[]core.PodReadinessGate(nil), RuntimeClassName:(*string)(nil), Overhead:core.ResourceList(nil), EnableServiceLinks:(*bool)(nil), TopologySpreadConstraints:[]core.TopologySpreadConstraint(nil), OS:(*core.PodOS)(nil)}}: field is immutable
+#
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    batch.kubernetes.io/job-tracking: ""
+  creationTimestamp: "2023-12-29T04:50:37Z"
+  generation: 1
+  labels:
+    controller-uid: 69548587-1189-407c-8469-bad65e3fb6da
+    job-name: audit-sh
+  name: audit-sh
+  namespace: automation-scripts
+  resourceVersion: "714879"
+  uid: 69548587-1189-407c-8469-bad65e3fb6da
+spec:
+  backoffLimit: 6
+  completionMode: NonIndexed
+  completions: 1
+  parallelism: 1
+  selector:
+    matchLabels:
+      controller-uid: 69548587-1189-407c-8469-bad65e3fb6da
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        controller-uid: 69548587-1189-407c-8469-bad65e3fb6da
+        job-name: audit-sh
+    spec:
+      containers:
+      - command:
+        - '[/bin/bash,'
+        - c]
+        - '[oc get pods -all-namespaces -o jsonpath=''{.item[*].spec.containers[*].image}''
+          | sed ''s/ /\n/g''|sort|uniq ]'
+        image: quay.io/openshift/origin-cli:4.12
+        imagePullPolicy: IfNotPresent
+        name: audit-sh
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: auditor
+      serviceAccountName: auditor
+      terminationGracePeriodSeconds: 30
+status:
+  active: 1
+  ready: 0
+  startTime: "2023-12-29T04:50:37Z"
+  uncountedTerminatedPods: {}

@@ -1,0 +1,24 @@
+== Git Repository
+
+         ssh: git@git.ocp4.example.com:training/gitops-deploy.git
+       https: https://git.ocp4.example.com/training/gitops-deploy.git
+Git variable: GIT_SSL_CAINFO
+              /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+
+== OpenShift Resources
+
+         API: https://api.ocp4.example.com:6443
+     Project: gitops-deploy
+    Template: jenkins-persistent
+
+
+== OpenShift Commands
+
+oc adm policy add-cluster-role-to-user self-provisioner -z jenkins -n gitops-deploy
+
+
+== Jenkins Resources
+
+         URL: https://jenkins-gitops-deploy.apps.ocp4.example.com
+       Token: /home/student/developer-token.txt

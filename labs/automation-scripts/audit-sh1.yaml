@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  creationTimestamp: null
+  name: audit-sh
+spec:
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      serviceAccountName: auditor
+      containers:
+      - command: ["/bin/sh", "-c"]
+        args:
+        - "oc get pods --all-namespaces 
+            -o jsonpath='{.item[*].spec.containers[*].image}' 
+            |sed 's/ /\\\n/g'
+            |sort
+            |uniq"
+        image: quay.io/openshift/origin-cli:4.12
+        name: audit-sh
+        resources: {}
+      restartPolicy: Never
+status: {}
