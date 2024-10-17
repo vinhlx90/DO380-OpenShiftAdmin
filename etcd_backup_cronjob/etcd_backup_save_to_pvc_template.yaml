@@ -75,14 +75,7 @@ spec:
               command:
                 - "/bin/bash"
                 - "-c"
-                - oc get no -l node-role.kubernetes.io/master --no-headers -o name | head -n 1 |xargs -I {} -- oc debug {} --to-namespace=ocp-etcd-backup -- bash -c 'chroot /host sudo -E /usr/local/bin/cluster-backup.sh /home/core/backup && chroot /host sudo -E find /home/core/backup -type f -ctime +30 -delete'
-              volumeMounts:
-              - name: etcd-backup-storage
-                mountPath: /home/core/backup
-          volumes:
-          - name: etd-backup-storage
-            persistentVolumeClaim:
-              claimName: etcd-backup-pvc
+                - oc get no -l node-role.kubernetes.io/master --no-headers -o name | head -n 1 |xargs -I {} -- oc debug {} --to-namespace=ocp-etcd-backup -- bash -c 'chroot /host && sudo -E  mount -t nfs 10.64.62.200:/opt/openshift/backup  /home/core/backup && sudo -E /usr/local/bin/cluster-backup.sh /home/core/backup && sudo -E find /home/core/backup -type f -ctime +30 -delete'
           restartPolicy: "Never"
           terminationGracePeriodSeconds: 30
           activeDeadlineSeconds: 500
